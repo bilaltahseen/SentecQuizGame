@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Backdrop } from '@material-ui/core';
 import { DataContext } from '../Components/DataContext';
+
 import {
   Typography,
   Container,
@@ -14,6 +15,8 @@ class StartScreen extends Component {
   changeText(event) {
     this.setState({ name: event.target.value });
   }
+  header = new Headers();
+
   playButton() {
     this.context.setIsStart(false);
     const audio = new Audio('/submit.wav');
@@ -45,7 +48,7 @@ class StartScreen extends Component {
                   }}
                   variant='h5'
                 >
-                  <strong>Are you that smart?</strong>
+                  <strong>Are you smarter?</strong>
                 </Typography>
               </center>
             </Paper>

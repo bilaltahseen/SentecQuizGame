@@ -30,6 +30,7 @@ class AnswerCard extends Component {
     const audio = new Audio('/submit.wav');
     audio.play();
     this.setState({ selectedValue: '' });
+    this.context.setQuestionCount((this.context.questionCount += 1));
   }
 
   getRef(index) {

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Paper } from '@material-ui/core';
 import { DataContext } from './DataContext';
+import { withRouter } from 'react-router-dom';
+import { getQuestionsEASYData } from './FireStoreData';
 class TopBar extends Component {
   intervalID = 0;
   state = {
@@ -72,7 +74,7 @@ class TopBar extends Component {
           variant='outlined'
         >
           <center>
-            <h2>Level : Easy</h2>
+            <h2>Level : {this.context.level}</h2>
           </center>
         </Paper>
         <br></br>
@@ -81,4 +83,4 @@ class TopBar extends Component {
   }
 }
 
-export default TopBar;
+export default withRouter(TopBar);

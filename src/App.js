@@ -1,69 +1,69 @@
 import React, { Component } from 'react';
 import { Container } from '@material-ui/core';
-import QuestionCard from './Components/QuestionCard';
-import AnswerCard from './Components/AnswerCard';
 import TopBar from './Components/TopBar';
 import StartScreen from './Components/StartScreen';
-import { DataContext } from './Components/DataContext';
+
+import MainGameScreen from './Components/MainGameScreen';
+
 class App extends Component {
-  state = {
-    questions: '',
-    questionCount: 0,
-    randomImage: '',
-    dataLoaded: false,
-  };
-  static contextType = DataContext;
+  // state = {
+  //   questions: [],
+  //   questionCount: 0,
+  //   randomImage: '',
+  //   dataLoaded: false,
+  // };
+  // static contextType = DataContext;
 
-  pullfromArray() {
-    if (this.state.questions.length > 0) {
-      let questionCount = this.state.questionCount;
-      let index = Math.floor(Math.random() * this.state.questions.length);
-      let randomImage = this.state.questions[index];
-      this.state.questions.splice(index, 1);
-      this.setState({
-        randomImage: randomImage,
-        questionCount: (questionCount += 1),
-      });
-    }
-  }
+  // pullfromArray() {
+  //   if (this.state.questions.length > 0) {
+  //     let questionCount = this.state.questionCount;
+  //     let index = Math.floor(Math.random() * this.state.questions.length);
+  //     let randomImage = this.state.questions[index];
+  //     this.state.questions.splice(index, 1);
+  //     this.setState({
+  //       randomImage: randomImage,
+  //       questionCount: (questionCount += 1),
+  //     });
+  //   }
+  // }
 
-  async getDatafromContext() {
-    const questions = await this.context.EasyQsSet;
-    this.setState({ questions: questions });
-  }
+  // getDataMethod(level = 'Easy') {
+  //   if (level === 'Easy') {
+  //     this.setState({ questions: this.context.EasyQsSet });
+  //     this.pullfromArray();
+  //     console.log('EasySetLoaded');
+  //   }
+  //   if (level === 'Medium') {
+  //     this.setState({ questions: this.context.MediumQsSet });
+  //     this.pullfromArray();
+  //     console.log('MediumSetLoaded');
+  //   }
+  // }
 
-  componentDidMount() {
-    console.log(!this.context.isStart);
-  }
-
-  async componentDidUpdate() {
-    if (!this.context.isStart && !this.state.dataLoaded) {
-      console.log(this.context.EasyQsSet);
-      await this.setState({
-        questions: this.context.EasyQsSet,
-        dataLoaded: true,
-      });
-      this.pullfromArray();
-    }
-  }
+  // componentDidMount() {
+  //   setTimeout(() => this.getDataMethod(), 1000);
+  // }
+  // componentDidUpdate(prevProps, prevState) {
+  //   if ((this.context.level === 'Medium') & !this.state.dataLoaded) {
+  //     this.getDataMethod('Medium');
+  //     this.setState({ dataLoaded: false });
+  //   }
+  // }
+  // // componentDidUpdate() {
+  // //   if (!this.context.isStart) {
+  // //     if (this.context.level === 'Easy' && !this.state.dataLoaded) {
+  // //       this.setState({
+  // //         questions: this.context.EasyQsSet,
+  // //         dataLoaded: true,
+  // //       });
+  // //       this.pullfromArray();
+  // //       console.log('Inner StateUpdate');
+  // //     }
+  // //     console.log('Outer StateUpdate');
+  // //   }
+  // // }
 
   render() {
-    const QsToDisplay = this.state.randomImage ? (
-      <div>
-        <QuestionCard
-          question={this.state.randomImage['questionPara']}
-          questionCount={this.state.questionCount}
-        />
-
-        <AnswerCard
-          func={this.pullfromArray.bind(this)}
-          crt_answer={this.state.randomImage['correctAnswer']}
-          answers={this.state.randomImage['options']}
-        />
-      </div>
-    ) : (
-      ''
-    );
     return (
       <div>
         <Container
@@ -76,7 +76,7 @@ class App extends Component {
           maxWidth='sm'
         >
           <TopBar />
-          {QsToDisplay}
+          <MainGameScreen />
           <StartScreen />
         </Container>
       </div>

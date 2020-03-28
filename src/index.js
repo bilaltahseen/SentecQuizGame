@@ -22,7 +22,7 @@ if (!firebase.apps.length) {
 }
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <BrowserRouter>
       <DataProvider>
         <FirebaseHOC>
@@ -30,7 +30,7 @@ ReactDOM.render(
         </FirebaseHOC>
       </DataProvider>
     </BrowserRouter>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById('root')
 );
 

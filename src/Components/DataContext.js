@@ -3,7 +3,7 @@ import React, { useState, createContext } from 'react';
 export const DataContext = createContext();
 
 export const DataProvider = props => {
-  const [score, setScore] = useState(10);
+  const [score, setScore] = useState(0);
   const [timeOut, setTimeOut] = useState(false);
   const [level, setlevel] = useState('Easy');
   const [EasyQsSet, setEasyQsSet] = useState('');
@@ -12,7 +12,7 @@ export const DataProvider = props => {
   const [user, setUser] = useState('Your Name');
   const [isStart, setIsStart] = useState(true);
   const [nextLevel, setNextLevel] = useState('');
-
+  const [questionCount, setQuestionCount] = useState(0);
   return (
     <DataContext.Provider
       value={{
@@ -32,6 +32,8 @@ export const DataProvider = props => {
         setMediumQsSet,
         HardQsSet,
         setHardQsSet,
+        questionCount,
+        setQuestionCount,
       }}
     >
       {props.children}

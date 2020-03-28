@@ -12,7 +12,7 @@ class QuestionCard extends Component {
           variant='body1'
           style={{ textAlign: 'left', fontWeight: 'bolder' }}
         >
-          Question {this.props.questionCount}
+          Question {this.context.questionCount + 1}
         </Typography>
         <hr />
         <br></br>

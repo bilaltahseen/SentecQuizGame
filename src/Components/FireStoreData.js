@@ -2,8 +2,12 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import React, { Component } from 'react';
 import { DataContext } from './DataContext';
+import { withRouter, Redirect } from 'react-router-dom';
 class FirebaseHOC extends Component {
   static contextType = DataContext;
+  state = {
+    loadedLevel: 'Easy',
+  };
   async getQuestionsEASYData() {
     let questions = [];
     const querySnapshot = await firebase
@@ -46,11 +50,11 @@ class FirebaseHOC extends Component {
       });
     this.context.setMediumQsSet(questions);
   }
+
   async componentDidMount() {
     await this.getQuestionsEASYData();
     console.log('FetechData[FireStoreData.js]-easy');
     await this.getQuestionsMEDIUMData();
-    console.log('FetechData[FireStoreData.js]-easy');
   }
 
   render() {
@@ -58,4 +62,4 @@ class FirebaseHOC extends Component {
   }
 }
 
-export default FirebaseHOC;
+export default withRouter(FirebaseHOC);
