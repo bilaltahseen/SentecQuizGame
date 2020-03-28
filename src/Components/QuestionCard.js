@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography, Paper } from '@material-ui/core';
+import { DataContext } from './DataContext';
 class QuestionCard extends Component {
   state = {};
+  static contextType = DataContext;
+
   render() {
     return (
       <div>
@@ -12,15 +15,17 @@ class QuestionCard extends Component {
           Question {this.props.questionCount}
         </Typography>
         <hr />
+        <br></br>
         <Typography
           style={{
-            textAlign: 'center',
+            textAlign: 'left',
             fontFamily: 'Montserrat ,sans-serif',
             fontSize: '1.2rem',
           }}
         >
           {this.props.question}
         </Typography>
+        <br></br>
       </div>
     );
   }

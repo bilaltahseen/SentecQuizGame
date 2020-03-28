@@ -2,10 +2,31 @@ import React, { Component } from 'react';
 import { Paper } from '@material-ui/core';
 import { DataContext } from './DataContext';
 class TopBar extends Component {
-  state = {};
+  intervalID = 0;
+  state = {
+    time: 900,
+    timerLoaded: true,
+  };
+
   static contextType = DataContext;
+  async componentDidUpdate() {
+    if (!this.context.isStart && this.state.timerLoaded) {
+      this.timingFunc();
+      this.setState({ timerLoaded: false });
+    }
+  }
+  timingFunc() {
+    this.intervalID = setInterval(() => {
+      let time = this.state.time;
+      this.setState({ time: (time -= 1) });
+      if (time <= 0) {
+        clearInterval(this.intervalID);
+        this.context.setTimeOut(true);
+      }
+    }, 1000);
+  }
+
   render() {
-    console.log(this.context);
     return (
       <div>
         <div
@@ -25,7 +46,7 @@ class TopBar extends Component {
             variant='outlined'
           >
             <center>
-              <h4>Bilal Tahseen</h4>
+              <h4>{this.context.user}</h4>
             </center>
           </Paper>
           <Paper
@@ -38,7 +59,10 @@ class TopBar extends Component {
             variant='outlined'
           >
             <center>
-              <h4>Time : 1:00</h4>
+              <h4>
+                Time Left : {Math.floor(this.state.time / 60)}:
+                {this.state.time - Math.floor(this.state.time / 60) * 60}
+              </h4>
             </center>
           </Paper>
         </div>
@@ -52,7 +76,6 @@ class TopBar extends Component {
           </center>
         </Paper>
         <br></br>
-        <button onClick={() => this.context.setScore(20)}></button>
       </div>
     );
   }

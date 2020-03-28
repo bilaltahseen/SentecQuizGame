@@ -4,7 +4,9 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import firebase from 'firebase/app';
-
+import DataProvider from './Components/DataContext';
+import { BrowserRouter } from 'react-router-dom';
+import FirebaseHOC from './Components/FireStoreData';
 const firebaseConfig = {
   apiKey: 'AIzaSyAFe_qjhfuHZ7MlliMYjtzYhcaBrJtd7Is',
   authDomain: 'sentecquizapp.firebaseapp.com',
@@ -21,7 +23,13 @@ if (!firebase.apps.length) {
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <DataProvider>
+        <FirebaseHOC>
+          <App />
+        </FirebaseHOC>
+      </DataProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

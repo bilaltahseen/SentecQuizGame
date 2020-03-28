@@ -3,41 +3,16 @@ import { Container } from '@material-ui/core';
 import QuestionCard from './Components/QuestionCard';
 import AnswerCard from './Components/AnswerCard';
 import TopBar from './Components/TopBar';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import DataProvider from './Components/DataContext';
+import StartScreen from './Components/StartScreen';
+import { DataContext } from './Components/DataContext';
 class App extends Component {
   state = {
-    questions: [],
+    questions: '',
     questionCount: 0,
-    currentQuestion: '',
+    randomImage: '',
+    dataLoaded: false,
   };
-
-  async getQuestionsData() {
-    let questions = [...this.state.questions];
-    const querySnapshot = await firebase
-      .firestore()
-      .collection('Questions/Easy/QuestionsData')
-      .get();
-    querySnapshot.docs
-      .sort(() => Math.random() - 0.5)
-      .forEach(document => {
-        questions.push({
-          questionPara: document.data()['question'],
-          options: document.data()['options'],
-          correctAnswer: window.btoa(
-            Math.random()
-              .toString(36)
-              .substring(2, 15) + document.data()['correctAnswer']
-          ),
-        });
-      });
-    this.setState({ questions: questions });
-  }
-  async componentDidMount() {
-    await this.getQuestionsData();
-    this.pullfromArray();
-  }
+  static contextType = DataContext;
 
   pullfromArray() {
     if (this.state.questions.length > 0) {
@@ -49,6 +24,26 @@ class App extends Component {
         randomImage: randomImage,
         questionCount: (questionCount += 1),
       });
+    }
+  }
+
+  async getDatafromContext() {
+    const questions = await this.context.EasyQsSet;
+    this.setState({ questions: questions });
+  }
+
+  componentDidMount() {
+    console.log(!this.context.isStart);
+  }
+
+  async componentDidUpdate() {
+    if (!this.context.isStart && !this.state.dataLoaded) {
+      console.log(this.context.EasyQsSet);
+      await this.setState({
+        questions: this.context.EasyQsSet,
+        dataLoaded: true,
+      });
+      this.pullfromArray();
     }
   }
 
@@ -70,23 +65,21 @@ class App extends Component {
       ''
     );
     return (
-      <DataProvider>
-        <div>
-          <Container
-            style={{
-              backgroundColor: '#2788cc',
-              color: 'white',
-              padding: '5%',
-              margin: 0,
-            }}
-            maxWidth='sm'
-          >
-            <TopBar />
-
-            {QsToDisplay}
-          </Container>
-        </div>
-      </DataProvider>
+      <div>
+        <Container
+          style={{
+            backgroundColor: '#2788cc',
+            color: 'white',
+            padding: '5%',
+            margin: 0,
+          }}
+          maxWidth='sm'
+        >
+          <TopBar />
+          {QsToDisplay}
+          <StartScreen />
+        </Container>
+      </div>
     );
   }
 }

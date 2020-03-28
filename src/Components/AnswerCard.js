@@ -1,39 +1,40 @@
 import React, { Component } from 'react';
-import { Paper, Radio, Button, Avatar } from '@material-ui/core';
-import buttonClick from '../assets/sfx/button.wav';
+import { Paper, Button, Avatar } from '@material-ui/core';
+import { DataContext } from '../Components/DataContext';
+
 class AnswerCard extends Component {
+  static contextType = DataContext;
   state = {
     selectedValue: '',
     isOk: false,
     score: 0,
   };
-  AnswerRef_0 = React.createRef();
-  AnswerRef_1 = React.createRef();
-  AnswerRef_2 = React.createRef();
-  AnswerRef_3 = React.createRef();
 
   componentDidMount() {
     console.log('[AnswerCard]');
   }
   submitAnswer() {
-    const score = this.state.score;
-    this.setState({ selectedValue: '' });
     this.props.func();
     const currentAnswer = window.atob(this.props.crt_answer);
     if (
-      this.state.selectedValue ===
+      this.state.selectedValue.toString() ===
       currentAnswer.charAt(currentAnswer.length - 1)
     ) {
       console.log('Correct');
-      this.setState({ score: (score += 10) });
+      const currentScore = this.context.score;
+      this.context.setScore(currentScore + 10);
+      console.log(this.context.score);
     } else {
       console.log('Wrong');
     }
+    const audio = new Audio('/submit.wav');
+    audio.play();
+    this.setState({ selectedValue: '' });
   }
 
   getRef(index) {
     this.setState({ selectedValue: index });
-    const audio = new Audio({ buttonClick });
+    const audio = new Audio('/button.wav');
     audio.play();
   }
   render() {
@@ -60,7 +61,7 @@ class AnswerCard extends Component {
                   }}
                 >
                   <Avatar style={{ backgroundColor: '#e78330' }}>
-                    <strong>{index + 1}</strong>
+                    <strong>{String.fromCharCode(index + 65)}</strong>
                   </Avatar>
                   <p
                     style={{
@@ -84,10 +85,12 @@ class AnswerCard extends Component {
         {answersMap}
         <center>
           <Button
+            disabled={this.state.selectedValue === ''}
             onClick={this.submitAnswer.bind(this)}
             fullWidth
             style={{
-              backgroundColor: '#e78330',
+              backgroundColor:
+                this.state.selectedValue === '' ? 'gray' : '#e78330',
               color: '#fff',
               fontSize: '20px',
               fontWeight: 'bold',
