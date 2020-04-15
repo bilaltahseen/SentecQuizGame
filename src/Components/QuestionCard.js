@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography, Paper } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { DataContext } from './DataContext';
 class QuestionCard extends Component {
   state = {};
@@ -12,7 +12,7 @@ class QuestionCard extends Component {
           variant='body1'
           style={{ textAlign: 'left', fontWeight: 'bolder' }}
         >
-          Question {this.context.questionCount + 1}
+          Question {this.props.questionCount + 1}
         </Typography>
         <hr />
         <br></br>
@@ -21,6 +21,7 @@ class QuestionCard extends Component {
             textAlign: 'left',
             fontFamily: 'Montserrat ,sans-serif',
             fontSize: '1.2rem',
+            overflowWrap: 'break-word',
           }}
         >
           {this.props.question}

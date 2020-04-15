@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Paper } from '@material-ui/core';
+import { Paper, Avatar } from '@material-ui/core';
 import { DataContext } from './DataContext';
-import { withRouter } from 'react-router-dom';
-import { getQuestionsEASYData } from './FireStoreData';
+
 class TopBar extends Component {
   intervalID = 0;
   state = {
@@ -11,24 +10,32 @@ class TopBar extends Component {
   };
 
   static contextType = DataContext;
+
   async componentDidUpdate() {
-    if (!this.context.isStart && this.state.timerLoaded) {
+    const [state] = this.context;
+
+    if (!state.isStart && this.state.timerLoaded) {
       this.timingFunc();
       this.setState({ timerLoaded: false });
     }
+    if (state.gameOver) {
+      clearInterval(this.intervalID);
+    }
   }
   timingFunc() {
+    const [, dispatch] = this.context;
     this.intervalID = setInterval(() => {
       let time = this.state.time;
       this.setState({ time: (time -= 1) });
       if (time <= 0) {
         clearInterval(this.intervalID);
-        this.context.setTimeOut(true);
+        dispatch({ type: 'TIME_OUT' });
       }
     }, 1000);
   }
 
   render() {
+    const [state] = this.context;
     return (
       <div>
         <div
@@ -41,20 +48,20 @@ class TopBar extends Component {
           <Paper
             style={{
               padding: '2px',
-              width: '50.33%',
+              width: '35.33%',
               backgroundColor: '#e78330',
               color: '#fff',
             }}
             variant='outlined'
           >
             <center>
-              <h4>{this.context.user}</h4>
+              <h4>{state.userDetails.userName}</h4>
             </center>
           </Paper>
           <Paper
             style={{
               padding: '2px',
-              width: '37.33%',
+              width: '40.33%',
               backgroundColor: '#e78330',
               color: '#fff',
             }}
@@ -67,6 +74,13 @@ class TopBar extends Component {
               </h4>
             </center>
           </Paper>
+          <center>
+            <Avatar
+              style={{ width: '50px', height: '50px', marginTop: '15%' }}
+              alt='Remy Sharp'
+              src={state.userDetails.userPhotoURL}
+            />
+          </center>
         </div>
         <br></br>
         <Paper
@@ -74,7 +88,7 @@ class TopBar extends Component {
           variant='outlined'
         >
           <center>
-            <h2>Level : {this.context.level}</h2>
+            <h2>Level : {state.level}</h2>
           </center>
         </Paper>
         <br></br>
@@ -83,4 +97,4 @@ class TopBar extends Component {
   }
 }
 
-export default withRouter(TopBar);
+export default TopBar;

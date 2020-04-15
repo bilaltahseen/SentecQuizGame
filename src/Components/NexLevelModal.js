@@ -1,23 +1,25 @@
 import React, { Component } from 'react';
 import { Backdrop, Container, Typography, Grow } from '@material-ui/core';
 import poperImage from '../assets/giphy.gif';
+import { DataContext } from './DataContext';
+import PlayAudio from './PlayAudio';
 class NextLevelModal extends Component {
-  state = {
-    nexLevelLoaded: false,
-  };
+  static contextType = DataContext;
   componentDidMount() {
-    setTimeout(() => this.setState({ nexLevelLoaded: true }), 1500);
-    const audio = new Audio('/NextLevel.mp3');
-    audio.play();
+    const [, dispatch] = this.context;
+    PlayAudio('NEXT_LEVEL');
+    setTimeout(() => dispatch({ type: 'NEXT_LEVEL' }), 2000);
   }
+
   render() {
+    const [state] = this.context;
     return (
       <div>
         <Backdrop
           style={{ zIndex: 1, color: '#fff', padding: '5%' }}
-          open={!this.state.nexLevelLoaded}
+          open={state.nextLevel}
         >
-          <Grow in={!this.state.nexLevelLoaded}>
+          <Grow in={state.nextLevel}>
             <Container
               maxWidth='xs'
               style={{

@@ -2,33 +2,48 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import Admin from './Admin';
 import * as serviceWorker from './serviceWorker';
 import firebase from 'firebase/app';
+import 'firebase/analytics';
 import DataProvider from './Components/DataContext';
+import Score from './Score';
 import { BrowserRouter } from 'react-router-dom';
-import FirebaseHOC from './Components/FireStoreData';
+import { Switch, Route } from 'react-router-dom';
+import Axios from 'axios';
+
+Axios.defaults.baseURL = process.env.REACT_APP_API;
+
 const firebaseConfig = {
-  apiKey: 'AIzaSyAFe_qjhfuHZ7MlliMYjtzYhcaBrJtd7Is',
-  authDomain: 'sentecquizapp.firebaseapp.com',
-  databaseURL: 'https://sentecquizapp.firebaseio.com',
-  projectId: 'sentecquizapp',
-  storageBucket: 'sentecquizapp.appspot.com',
-  messagingSenderId: '272225063024',
-  appId: '1:272225063024:web:f22a58c371ad694d1264b5',
-  measurementId: 'G-B3S4T5L5QG',
+  apiKey: process.env.REACT_APP_apiKey,
+  authDomain: process.env.REACT_APP_authDomain,
+  projectId: process.env.REACT_APP_projectId,
+  appId: process.env.REACT_APP_appId,
+  measurementId: process.env.REACT_APP_measurementId,
 };
+
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
 }
 
 ReactDOM.render(
   <React.Fragment>
     <BrowserRouter>
-      <DataProvider>
-        <FirebaseHOC>
-          <App />
-        </FirebaseHOC>
-      </DataProvider>
+      <Switch>
+        <Route path='/admin' component={Admin} />
+        <Route path='/scoreview' component={Score} />
+      </Switch>
+
+      <Route
+        exact
+        path='/'
+        render={() => (
+          <DataProvider>
+            <App />
+          </DataProvider>
+        )}
+      />
     </BrowserRouter>
   </React.Fragment>,
   document.getElementById('root')

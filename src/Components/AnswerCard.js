@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Paper, Button, Avatar } from '@material-ui/core';
 import { DataContext } from '../Components/DataContext';
+import PlayAudio from './PlayAudio';
 
 class AnswerCard extends Component {
   static contextType = DataContext;
@@ -10,46 +11,38 @@ class AnswerCard extends Component {
     score: 0,
   };
 
-  componentDidMount() {
-    console.log('[AnswerCard]');
-  }
   submitAnswer() {
+    const [, dispatch] = this.context;
     this.props.func();
     const currentAnswer = window.atob(this.props.crt_answer);
     if (
       this.state.selectedValue.toString() ===
       currentAnswer.charAt(currentAnswer.length - 1)
     ) {
-      console.log('Correct');
-      const currentScore = this.context.score;
-      this.context.setScore(currentScore + 10);
-      console.log(this.context.score);
+      dispatch({
+        type: 'SCORE_UPD',
+      });
     } else {
-      console.log('Wrong');
     }
-    const audio = new Audio('/submit.wav');
-    audio.play();
     this.setState({ selectedValue: '' });
-    this.context.setQuestionCount((this.context.questionCount += 1));
+    PlayAudio('SUBMIT');
+    dispatch({ type: 'QUESTION_COUNT' });
   }
 
   getRef(index) {
     this.setState({ selectedValue: index });
-    const audio = new Audio('/button.wav');
-    audio.play();
+    PlayAudio('CLICK');
   }
   render() {
     const answersMap = this.props.answers
       ? this.props.answers.map((choice, index) => {
           return (
-            <div key={index}>
+            <div key={index} onClick={this.getRef.bind(this, index)}>
               <Paper
-                ref={this[`AnswerRef_${index}`]}
-                onClick={this.getRef.bind(this, index)}
                 style={{
                   width: '100%',
-                  borderRadius: '23px',
-                  transition: '0.2s',
+                  borderRadius: '20px',
+                  transition: 'background-color 0.1s ease-in-out',
                   color: index === this.state.selectedValue ? '#fff' : '',
                   backgroundColor:
                     index === this.state.selectedValue ? '#e78330' : '',
@@ -68,7 +61,7 @@ class AnswerCard extends Component {
                     style={{
                       fontFamily: 'Montserrat ,sans-serif',
                       fontSize: '12px',
-                      paddingLeft: '2%',
+                      paddingLeft: '1%',
                       fontWeight: 'bold',
                     }}
                   >
@@ -83,6 +76,7 @@ class AnswerCard extends Component {
       : '';
     return (
       <div>
+        <audio id='audio' src='/button.mp3'></audio>
         {answersMap}
         <center>
           <Button

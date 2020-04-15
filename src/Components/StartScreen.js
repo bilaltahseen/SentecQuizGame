@@ -1,34 +1,88 @@
 import React, { Component } from 'react';
 import { Backdrop } from '@material-ui/core';
 import { DataContext } from '../Components/DataContext';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
-import {
-  Typography,
-  Container,
-  Paper,
-  TextField,
-  Button,
-} from '@material-ui/core';
+import facebooklogo from '../assets/facebook.png';
+import { Typography, Container, Paper } from '@material-ui/core';
+import GenericModal from './GenericModal';
+import Axios from 'axios';
+
 class StartScreen extends Component {
-  state = { name: '' };
   static contextType = DataContext;
-  changeText(event) {
-    this.setState({ name: event.target.value });
-  }
-  header = new Headers();
+  state = {
+    alreadyPlayed: false,
+    auth: false,
+    splash: true,
+  };
 
   playButton() {
-    this.context.setIsStart(false);
-    const audio = new Audio('/submit.wav');
-    audio.play();
-    this.context.setUser(this.state.name);
+    const [, dispatch] = this.context;
+    const provider = new firebase.auth.FacebookAuthProvider();
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then((result) => {
+        dispatch({
+          type: 'USER_DETAILS',
+          payload: {
+            userName: result.user.displayName,
+            userPhotoURL: result.user.photoURL,
+          },
+        });
+        result.user.getIdToken().then((token) => {
+          this.loadData(token);
+        });
+      })
+      .catch((error) => {
+        alert(error);
+      });
   }
+  loadData(idToken) {
+    const [, dispatch] = this.context;
+    Axios({
+      url: '/getdata',
+      method: 'GET',
+      headers: { Authorization: `Bearer ${idToken}` },
+    })
+      .then((response) => {
+        dispatch({
+          type: 'QUESTIONS_FROM_API',
+          payload: response.data,
+        });
+      })
+      .then(() => {
+        dispatch({
+          type: 'IS_START',
+        });
+      })
+      .then(() => {
+        setTimeout(() => {
+          dispatch({
+            type: 'LOGED_IN',
+          });
+        }, 3000);
+      })
+      .catch((error) => {
+        if (error.response) {
+          if (error.response.status === 400) {
+            this.setState({ alreadyPlayed: true });
+          } else {
+            alert(error);
+          }
+        }
+      });
+  }
+
   render() {
-    return (
+    const [state] = this.context;
+
+    const StartScreen = (
       <div>
         <Backdrop
           style={{ zIndex: 1, color: '#fff', padding: '5%' }}
-          open={this.context.isStart}
+          open={state.isStart}
         >
           <Container
             maxWidth='xs'
@@ -39,12 +93,22 @@ class StartScreen extends Component {
               borderRadius: '10px',
             }}
           >
+            {this.state.alreadyPlayed ? (
+              <GenericModal
+                buttonText='Quit'
+                Ttype='h5'
+                title='Your score is already updated'
+              />
+            ) : (
+              ''
+            )}
             <Paper style={{ backgroundColor: '#e78330', padding: '10px' }}>
               <center>
                 <Typography
                   style={{
                     color: '#fff',
                     fontFamily: 'Montserrat ,sans-serif',
+                    fontWeight: '100',
                   }}
                   variant='h5'
                 >
@@ -61,55 +125,33 @@ class StartScreen extends Component {
                 fontFamily: 'Montserrat ,sans-serif',
               }}
             >
-              <p>Enter your name to proceed</p>
-              <TextField
-                style={{
-                  backgroundColor: '#fff',
-                  width: '80%',
-                }}
-                type='text'
-                InputProps={{
-                  style: {
-                    fontSize: '1.5rem',
-                    textAlignLast: 'center',
-                  },
-                }}
-                onChange={this.changeText.bind(this)}
-              />
               <h3>Instructions</h3>
+              <p style={{ lineHeight: '150%', textAlign: 'left' }}>
+                There are 3 levels in this quiz game each level have 5 questions
+                with 4 multiple choices select any one of them and proceed to
+                the next one the time allocated is 15 mins. Once all the
+                questions are submitted your score will be posted and we'll
+                announce the winner.
+              </p>
               <center>
-                <strong>
-                  <p>
-                    There are 3 levels in this quiz game each level have 5
-                    questions with 4 multiple choices select any one of them and
-                    proceed to the next one the time allocated is 15 mins. Once
-                    all the questions are submitted your score will be posted
-                    and will announce the winner.
-                  </p>
-                </strong>
+                <p>
+                  <strong>All rights reserved finalartproduct ®</strong>
+                </p>
               </center>
               <br></br>
-              <br></br>
-              <Button
-                disabled={this.state.name === ''}
+              <Paper
                 onClick={this.playButton.bind(this)}
                 fullWidth
-                style={{
-                  backgroundColor: this.state.name === '' ? 'gray' : '#e78330',
-                  color: '#fff',
-                  fontSize: '20px',
-                  fontWeight: 'bold',
-                  fontFamily: 'Montserrat ,sans-serif',
-                }}
-                variant='contained'
+                style={{ backgroundColor: '#4267B2' }}
               >
-                Play Now
-              </Button>
+                <img height='40px' src={facebooklogo} alt='facebooklogo'></img>
+              </Paper>
             </div>
           </Container>
         </Backdrop>
       </div>
     );
+    return <div>{StartScreen}</div>;
   }
 }
 
