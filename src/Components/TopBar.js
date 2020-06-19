@@ -5,7 +5,7 @@ import { DataContext } from './DataContext';
 class TopBar extends Component {
   intervalID = 0;
   state = {
-    time: 900,
+    time: 1500,
     timerLoaded: true,
   };
 

@@ -37,11 +37,22 @@
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
   </head>
-  <body style="background-color: #2788cc;">
+  <body
+    oncopy="return false"
+    oncut="return false"
+    onpaste="return false"
+    style="background-color: #2788cc;"
+  >
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <script>
       window.__REACT_DEVTOOLS_GLOBAL_HOOK__.inject = function () {};
+      var devtools = function () {};
+      devtools.toString = function () {
+        this.opened = true;
+        console.log('%c', devtools);
+      };
     </script>
+
     <div id="root"></div>
     <!--
       This HTML file is a template.

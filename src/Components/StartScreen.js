@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Backdrop } from '@material-ui/core';
+import { Backdrop, Button } from '@material-ui/core';
 import { DataContext } from '../Components/DataContext';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 
-import facebooklogo from '../assets/facebook.png';
 import { Typography, Container, Paper } from '@material-ui/core';
 import GenericModal from './GenericModal';
 import Axios from 'axios';
@@ -127,25 +126,34 @@ class StartScreen extends Component {
             >
               <h3>Instructions</h3>
               <p style={{ lineHeight: '150%', textAlign: 'left' }}>
-                There are 3 levels in this quiz game each level have 5 questions
-                with 4 multiple choices select any one of them and proceed to
-                the next one the time allocated is 15 mins. Once all the
-                questions are submitted your score will be posted and we'll
-                announce the winner.
+                There are 3 levels in this quiz game each level have{' '}
+                <strong>20</strong> questions with 4 multiple choices select any
+                one of them and proceed to the next one the time allocated is{' '}
+                <strong>20 mins.</strong> Once all the questions are submitted
+                your score will be posted and we'll announce the winner.
               </p>
+
+              <br></br>
+
+              <Button
+                onClick={this.playButton.bind(this)}
+                style={{
+                  color: '#3b5998',
+                  backgroundColor: '#fff',
+                  fontWeight: 'bold',
+                }}
+                color='inherit'
+                variant='contained'
+              >
+                LOGIN WITH FACEBOOK
+              </Button>
               <center>
-                <p>
-                  <strong>All rights reserved finalartproduct ®</strong>
+                <p style={{ fontSize: 12, opacity: 0.7 }}>
+                  <strong>
+                    All rights reserved sentec@20/finalartproduct ®
+                  </strong>
                 </p>
               </center>
-              <br></br>
-              <Paper
-                onClick={this.playButton.bind(this)}
-                fullWidth
-                style={{ backgroundColor: '#4267B2' }}
-              >
-                <img height='40px' src={facebooklogo} alt='facebooklogo'></img>
-              </Paper>
             </div>
           </Container>
         </Backdrop>

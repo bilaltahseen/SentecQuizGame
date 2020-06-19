@@ -26,7 +26,7 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
 }
-
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 ReactDOM.render(
   <React.Fragment>
     <BrowserRouter>
@@ -35,15 +35,19 @@ ReactDOM.render(
         <Route path='/scoreview' component={Score} />
       </Switch>
 
-      <Route
-        exact
-        path='/'
-        render={() => (
-          <DataProvider>
-            <App />
-          </DataProvider>
-        )}
-      />
+      {isMobile ? (
+        <Route
+          exact
+          path='/'
+          render={() => (
+            <DataProvider>
+              <App />
+            </DataProvider>
+          )}
+        />
+      ) : (
+        ''
+      )}
     </BrowserRouter>
   </React.Fragment>,
   document.getElementById('root')
