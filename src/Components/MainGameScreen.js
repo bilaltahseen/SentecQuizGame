@@ -39,7 +39,7 @@ class MainGameScreen extends Component {
 
   componentDidUpdate() {
     const [state, dispatch] = this.context;
-    if (state.questionCount === 20 && state.level === 'Easy') {
+    if (state.questionCount === 5 && state.level === 'Easy') {
       dispatch({ type: 'RESET_COUNT' });
       dispatch({ type: 'NEXT_LEVEL' });
       dispatch({ type: 'LEVEL', payload: 'Medium' });
@@ -48,7 +48,7 @@ class MainGameScreen extends Component {
         this.pullfromArray();
       });
     }
-    if (state.questionCount === 20 && state.level === 'Medium') {
+    if (state.questionCount === 5 && state.level === 'Medium') {
       dispatch({ type: 'RESET_COUNT' });
       dispatch({ type: 'NEXT_LEVEL' });
       dispatch({ type: 'LEVEL', payload: 'Hard' });
@@ -57,7 +57,7 @@ class MainGameScreen extends Component {
         this.pullfromArray();
       });
     }
-    if (state.questionCount === 20 && state.level === 'Hard') {
+    if (state.questionCount === 5 && state.level === 'Hard') {
       dispatch({ type: 'GAME_OVER' });
       dispatch({ type: 'RESET_COUNT' });
       dispatch({ type: 'LEVEL', payload: 'Finished' });
